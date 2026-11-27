@@ -194,7 +194,7 @@ async function getSegs(id){
   $('#e').textContent='Đang lấy phụ đề…';
   try{
     const r=await fetch('/api/transcript?v='+id+'&lang='+encodeURIComponent($('#lang').value||'en'));
-    const d=await r.json();if(d.error)throw new Error(d.error);
+    const tx=await r.text();let d;try{d=JSON.parse(tx)}catch(e){throw new Error(r.status===404?'chưa tìm thấy /api/transcript, kiểm tra thư mục api trên repo':'máy chủ trả về dữ liệu lạ')}if(d.error)throw new Error(d.error);
     $('#tr').value=d.segs.map(x=>fmt(x.s)+'\n'+x.t).join('\n');
     return d.segs;
   }catch(x){$('#e').textContent='Không tự lấy được phụ đề ('+x.message+'). Bạn có thể dán phụ đề thủ công.';return null}
