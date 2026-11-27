@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dictation từ YouTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f1;--surf:#fff;--ink:#12302b;--mut:#5d7570;--line:#d3dfdb;--acc:#0b7a6b;--accink:#fff;--ok:#166534;--okbg:#d9f5e3;--bad:#b91c1c;--badbg:#fde4e4;--warn:#92600a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--surf:#162623;--ink:#e3f0ec;--mut:#92aaa4;--line:#27403b;--acc:#3dc4ae;--accink:#06231e;--ok:#7ee2a3;--okbg:#17402b;--bad:#ff9a9a;--badbg:#4a1e1e;--warn:#f1c25f}}
+:root[data-theme="dark"]{--bg:#0e1a18;--surf:#162623;--ink:#e3f0ec;--mut:#92aaa4;--line:#27403b;--acc:#3dc4ae;--accink:#06231e;--ok:#7ee2a3;--okbg:#17402b;--bad:#ff9a9a;--badbg:#4a1e1e;--warn:#f1c25f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--mut);margin:0 0 18px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:16px}
+label{display:block;font-weight:600;margin:0 0 6px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:130px;resize:vertical;font-size:.92rem}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+button{font:inherit;font-weight:600;cursor:pointer;border:1px solid var(--line);background:var(--surf);color:var(--ink);border-radius:10px;padding:9px 14px}
+button.pri{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+#pl{aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:12px}
+#pl.hide{height:0;aspect-ratio:auto;margin:0;visibility:hidden}
+#pl iframe{width:100%;height:100%;border:0}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:0 0 12px}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.meta{color:var(--mut);font-size:.92rem;margin:0 0 8px}
+#ans{font-size:1.15rem;padding:12px 14px;margin:10px 0}
+.res{font-size:1.1rem;line-height:1.9;margin-top:12px}
+.res span{padding:1px 4px;border-radius:5px;margin-right:3px;display:inline-block}
+.ok{background:var(--okbg);color:var(--ok)}.miss{background:var(--badbg);color:var(--bad);font-weight:600}
+.extra{color:var(--warn);text-decoration:line-through}
+.hint{font-size:1.1rem;letter-spacing:.04em;color:var(--mut)}
+.score{font-weight:800;font-size:1.05rem;margin:0 0 4px}
+#list{max-height:560px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.it{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;padding:8px 10px;font-weight:400}
+.it.on{border-color:var(--acc);background:var(--bg)}
+.dot{flex:none;min-width:2.6em;font-weight:800;color:var(--mut);font-size:.85rem;padding-top:2px}
+.dot.d{color:var(--ok)}.dot.t{color:var(--warn)}
+.it small{color:var(--mut);display:block}
+.err{color:var(--bad);margin:8px 0 0}
+details summary{cursor:pointer;color:var(--mut);margin-top:10px}
+.keys{color:var(--mut);font-size:.85rem;margin-top:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><div class="wrap">
+<h1>Luyện nghe chép chính tả từ YouTube</h1>
+<p class="sub">Dán link video và phụ đề có mốc thời gian. Nghe từng câu, gõ lại, rồi kiểm tra từng từ.</p>
+
+<section class="card" id="setup">
+<label for="url">Link YouTube</label>
+<input id="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+<label for="tr" style="margin-top:12px">Phụ đề (để trống nếu muốn app tự lấy)</label>
+<textarea id="tr" placeholder="0:00&#10;Hello everyone, welcome back.&#10;0:04&#10;Today we are going to talk about habits."></textarea>
+<details><summary>Lấy phụ đề ở đâu?</summary>
+<p class="meta">Trên YouTube, mở video, bấm “...more” dưới mô tả, chọn “Show transcript”, bôi đen toàn bộ rồi copy. Dán vào đây là dùng được, vì mỗi dòng đã có mốc thời gian. File .srt hoặc .vtt cũng được.</p></details>
+<div class="row" style="margin-top:12px"><label style="margin:0;font-weight:400"><input type="checkbox" id="rg" checked style="width:auto"> Tự chia câu cho hợp lý</label><label style="margin:0;font-weight:400">Ngôn ngữ <input id="lang" value="en" style="width:4.5em;display:inline-block;padding:4px 8px"></label></div>
+<div class="row" style="margin-top:12px"><button class="pri" id="go">Bắt đầu luyện</button><span id="e" class="err"></span></div>
+</section>
+
+<section id="app" hidden class="grid">
+<div class="card">
+<div id="pl"></div>
+<div class="bar"><i id="pb"></i></div>
+<p class="meta" id="meta"></p>
+<div class="row">
+<button class="pri" id="play">Nghe câu này</button>
+<select id="rate" style="width:auto" aria-label="Tốc độ"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option></select>
+<button id="prev">Câu trước</button>
+<button id="hide">Ẩn video</button>
+</div>
+<input id="ans" placeholder="Gõ những gì bạn nghe được" autocomplete="off" autocapitalize="off" spellcheck="false">
+<div class="row">
+<button class="pri" id="chk">Kiểm tra</button>
+<button id="hnt">Gợi ý</button>
+<button id="rev">Xem đáp án</button>
+<button id="next">Câu tiếp</button>
+</div>
+<div id="out"></div>
+<p class="keys">Enter: kiểm tra, rồi sang câu tiếp. Ctrl + Space: nghe lại.</p>
+</div>
+<div class="card"><p class="score" id="sc"></p><div id="list"></div>
+<div class="row" style="margin-top:12px"><button id="back">Đổi video</button><button id="reset">Xóa tiến độ</button></div></div>
+</section>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let segs=[],idx=0,vid='',st={},fr=null,playEnd=null,armed=false,tok=0,checked=false;
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const ytId=u=>{const m=u.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([\w-]{11})/);return m?m[1]:''};
+const ts=s=>s.replace(',','.').split(':').map(parseFloat).reduce((a,b)=>a*60+b,0);
+const clean=t=>t.replace(/<[^>]+>/g,'').replace(/\[[^\]]*\]/g,'').replace(/\s+/g,' ').trim();
+function parse(t){
+  const L=t.replace(/\r/g,'').split('\n'),out=[];let c=null;
+  if(/-->/.test(t)){
+    for(const l of L){
+      if(l.includes('-->')){c={s:ts(l.split('-->')[0].trim().split(' ')[0]),t:''};out.push(c)}
+      else if(!l.trim())c=null;
+      else if(c)c.t+=' '+l;
+    }
+  }else{
+    const re=/^((?:\d{1,2}:)?\d{1,2}:\d{2})\s*(.*)$/;
+    for(const l of L){
+      const m=l.trim().match(re);
+      if(m){c={s:ts(m[1]),t:m[2]};out.push(c)}
+      else if(c&&l.trim())c.t+=' '+l;
+    }
+  }
+  const r=[];
+  for(const o of out){const x=clean(o.t);if(!x)continue;if(r.length&&r[r.length-1].t===x)continue;r.push({s:o.s,t:x})}
+  r.forEach((o,i)=>{const n=r[i+1];o.e=n?Math.min(n.s,o.s+15):o.s+6});
+  return r;
+}
+/* player via postMessage (no external script) */
+function cmd(f,a){if(fr)fr.contentWindow.postMessage(JSON.stringify({event:'command',func:f,args:a||[]}),'*')}
+function loadPlayer(id){
+  $('#pl').innerHTML='<iframe id="yt" allow="autoplay; encrypted-media" allowfullscreen src="https://www.youtube.com/embed/'+id+'?enablejsapi=1&playsinline=1&rel=0&origin='+encodeURIComponent(location.origin)+'"></iframe>';
+  fr=$('#yt');
+  const listen=()=>fr.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');
+  fr.onload=()=>{listen();setTimeout(listen,800);setTimeout(listen,2000)};
+}
+addEventListener('message',e=>{
+  if(!/youtube\.com$/.test(new URL(e.origin).hostname))return;
+  let d;try{d=JSON.parse(e.data)}catch(x){return}
+  if(d.event==='infoDelivery'&&d.info&&d.info.currentTime!=null&&playEnd!=null){
+    const c=d.info.currentTime;
+    if(!armed&&c<playEnd-.3)armed=true;
+    if(armed&&c>=playEnd-.12)stop();
+  }
+});
+function stop(){cmd('pauseVideo');playEnd=null}
+function play(){
+  const s=segs[idx];if(!s)return;const my=++tok,r=parseFloat($('#rate').value);
+  cmd('setPlaybackRate',[r]);cmd('seekTo',[s.s,true]);cmd('playVideo');
+  playEnd=s.e;armed=false;
+  setTimeout(()=>{if(my===tok&&playEnd!=null)stop()},((s.e-s.s)/r+1.2)*1000);
+  $('#ans').focus();
+}
+/* diff */
+const norm=w=>w.toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{N}']/gu,'');
+const words=s=>s.split(/\s+/).map(w=>({w,n:norm(w)})).filter(x=>x.n);
+function diff(a,b){
+  const n=a.length,m=b.length,D=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)D[i][j]=a[i].n===b[j].n?D[i+1][j+1]+1:Math.max(D[i+1][j],D[i][j+1]);
+  const o=[];let i=0,j=0;
+  while(i<n&&j<m){
+    if(a[i].n===b[j].n){o.push(['ok',a[i].w]);i++;j++}
+    else if(D[i+1][j]>=D[i][j+1]){o.push(['miss',a[i].w]);i++}
+    else{o.push(['extra',b[j].w]);j++}
+  }
+  while(i<n)o.push(['miss',a[i++].w]);while(j<m)o.push(['extra',b[j++].w]);
+  return o;
+}
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function check(){
+  const a=words(segs[idx].t),b=words($('#ans').value);
+  if(!b.length){$('#out').innerHTML='<p class="meta">Hãy gõ vài từ trước khi kiểm tra.</p>';return}
+  const o=diff(a,b),ok=o.filter(x=>x[0]==='ok').length,pct=Math.round(ok/a.length*100);
+  $('#out').innerHTML='<p class="score">'+(pct===100?'Chính xác hoàn toàn':'Đúng '+pct+'% ('+ok+'/'+a.length+' từ)')+'</p><div class="res">'+
+    o.map(x=>'<span class="'+x[0]+'">'+esc(x[1])+'</span>').join('')+'</div><p class="meta">Xanh: đúng. Đỏ: bạn bỏ sót hoặc gõ sai. Vàng gạch ngang: từ thừa.</p>';
+  const old=st[idx]||0;st[idx]=Math.max(old,pct);checked=true;save();renderList();
+}
+function hint(){
+  const w=words(segs[idx].t);
+  $('#out').innerHTML='<p class="hint">'+w.map(x=>esc(x.w[0])+'_'.repeat(Math.max(0,x.w.length-1))).join(' ')+'</p>';
+}
+function reveal(){
+  $('#out').innerHTML='<div class="res"><span class="ok">'+esc(segs[idx].t)+'</span></div>';
+  if(st[idx]==null)st[idx]=0;checked=true;save();renderList();
+}
+function go(i){
+  if(i<0||i>=segs.length)return;idx=i;checked=false;$('#ans').value='';$('#out').innerHTML='';
+  $('#meta').textContent='Câu '+(i+1)+' / '+segs.length;renderList();save();
+}
+function renderList(){
+  const done=Object.keys(st).filter(k=>st[k]>=90).length;
+  $('#pb').style.width=(done/segs.length*100)+'%';
+  $('#sc').textContent='Hoàn thành '+done+' / '+segs.length+' câu';
+  $('#list').innerHTML=segs.map((s,i)=>{
+    const v=st[i],cl=v==null?'':v>=90?'d':'t';
+    return '<button class="it'+(i===idx?' on':'')+'" data-i="'+i+'"><span class="dot '+cl+'">'+(v==null?(i+1):v+'%')+'</span><span>'+(v!=null?esc(s.t):'<small>Câu '+(i+1)+'</small>')+'</span></button>';
+  }).join('');
+  const on=$('#list .on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function save(){store.set('dd:'+vid,{t:$('#tr').value,st,idx});store.set('dd:last',{u:$('#url').value,id:vid})}
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+async function getSegs(id){
+  if($('#tr').value.trim())return parse($('#tr').value);
+  $('#e').textContent='Đang lấy phụ đề…';
+  try{
+    const r=await fetch('/api/transcript?v='+id+'&lang='+encodeURIComponent($('#lang').value||'en'));
+    const d=await r.json();if(d.error)throw new Error(d.error);
+    $('#tr').value=d.segs.map(x=>fmt(x.s)+'\n'+x.t).join('\n');
+    return d.segs;
+  }catch(x){$('#e').textContent='Không tự lấy được phụ đề ('+x.message+'). Bạn có thể dán phụ đề thủ công.';return null}
+}
+/* gộp mảnh phụ đề rồi chia lại thành câu */
+function regroup(raw){
+  const W=[],out=[];let cur=[];
+  raw.forEach(f=>{const ws=f.t.split(/\s+/).filter(Boolean),d=(f.e-f.s)/(ws.length||1);
+    ws.forEach((w,i)=>W.push({w,s:f.s+d*i,e:f.s+d*(i+1),first:i===0}))});
+  const flush=n=>{const p=cur.splice(0,n||cur.length);if(p.length)out.push({s:Math.max(0,p[0].s-.1),e:p[p.length-1].e+.25,t:p.map(x=>x.w).join(' ')})};
+  W.forEach(x=>{
+    if(x.first&&cur.length>=4&&x.s-cur[cur.length-1].e>1)flush();
+    cur.push(x);const n=cur.length;
+    const end=/[.?!…]["”’')\]]*$/.test(x.w)&&!/^(Mr|Mrs|Ms|Dr|St|vs|etc)\.$/i.test(x.w);
+    if(end&&n>=3)flush();
+    else if(n>=18){let k=-1;cur.forEach((y,j)=>{if(j>=5&&/[,;:]$/.test(y.w))k=j});flush(k>0?k+1:n)}
+  });
+  flush();return out;
+}
+async function start(){
+  const id=ytId($('#url').value.trim());
+  if(!id){$('#e').textContent='Link YouTube chưa đúng. Thử dạng youtube.com/watch?v=… hoặc youtu.be/…';return}
+  let p=await getSegs(id);if(!p)return;if($('#rg').checked)p=regroup(p);
+  if(!p.length){$('#e').textContent='Chưa đọc được phụ đề. Mỗi câu cần có mốc thời gian như 0:05 hoặc 00:00:05,000.';return}
+  $('#e').textContent='';segs=p;
+  const sv=store.get('dd:'+id);vid=id;
+  if(sv&&sv.t===$('#tr').value){st=sv.st||{};idx=sv.idx||0}else{st={};idx=0}
+  $('#setup').hidden=true;$('#app').hidden=false;loadPlayer(id);go(Math.min(idx,segs.length-1));
+}
+$('#go').onclick=start;
+$('#play').onclick=play;$('#chk').onclick=check;$('#hnt').onclick=hint;$('#rev').onclick=reveal;
+$('#next').onclick=()=>go(idx+1);$('#prev').onclick=()=>go(idx-1);
+$('#hide').onclick=()=>{const h=$('#pl').classList.toggle('hide');$('#hide').textContent=h?'Hiện video':'Ẩn video'};
+$('#back').onclick=()=>{stop();$('#app').hidden=true;$('#setup').hidden=false};
+$('#reset').onclick=()=>{st={};save();go(0)};
+$('#list').onclick=e=>{const b=e.target.closest('.it');if(b)go(+b.dataset.i)};
+$('#ans').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();if(checked){go(idx+1);play()}else check()}
+});
+addEventListener('keydown',e=>{if(e.ctrlKey&&e.code==='Space'&&!$('#app').hidden){e.preventDefault();play()}});
+const last=store.get('dd:last');
+if(last){$('#url').value=last.u||'';const sv=store.get('dd:'+last.id);if(sv)$('#tr').value=sv.t||''}
+</script></body></html>
