@@ -104,8 +104,10 @@ function parse(t){
       else if(c)c.t+=' '+l;
     }
   }else{
+    const lab=/^\d+\s*(?:giờ|phút|giây|hours?|minutes?|seconds?)(?:[,\s]+(?:và\s+)?\d+\s*(?:giờ|phút|giây|hours?|minutes?|seconds?))*$/i;
     const re=/^((?:\d{1,2}:)?\d{1,2}:\d{2})\s*(.*)$/;
     for(const l of L){
+      if(lab.test(l.trim()))continue;
       const m=l.trim().match(re);
       if(m){c={s:ts(m[1]),t:m[2]};out.push(c)}
       else if(c&&l.trim())c.t+=' '+l;
